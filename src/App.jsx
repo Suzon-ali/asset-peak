@@ -31,10 +31,10 @@ function App() {
     <BrowserRouter>
       <Toaster />
       {pageLoading || loading && <RefreshLoader />} {/* Loader component */}
-      <div className='bg-white '>
+      <div >
         <div className="main mx-auto lg:px-0">
           <Navbar />
-          <div>
+          <div className='max-w-7xl mx-auto'>
             <Routes>
               {/* public routes */}
               <Route path="/" element={<Home />} />

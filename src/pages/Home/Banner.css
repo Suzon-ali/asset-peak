@@ -1,0 +1,90 @@
+.banner-slider {
+    position: relative;
+    width: 100%;
+    height: 600px; /* Adjust the height as needed */
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+   
+  }
+  
+  .slider-item {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .slider-item.active {
+    opacity: 1;
+  }
+  
+  .slider-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(60%); /* Darken the image for better text contrast */
+  }
+  
+  .slider-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.5); /* Optional: Add a background overlay for better text readability */
+    max-width: 80%;
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+  .slider-headline {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .slider-subheadline {
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin-bottom: 20px;
+  }
+  
+  .slider-bodyText {
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+  
+  .slider-button {
+    padding: 10px 30px;
+    background: linear-gradient(45deg, #6a11cb, #2575fc); /* Gradient background */
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 50px; /* Rounded button */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s, transform 0.3s;
+  }
+  
+  .slider-button:hover {
+    background: linear-gradient(45deg, #2575fc, #6a11cb); /* Gradient background on hover */
+    transform: scale(1.05); /* Slightly enlarge button on hover */
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  

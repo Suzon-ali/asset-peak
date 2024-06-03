@@ -50,7 +50,7 @@ const Navbar = () => {
   }, [isUserMenuOpen]);
 
   return (
-    <nav className="bg-gray-800">
+    <nav className="z-10 w-full border-b border-black/10 ">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
         <div className="relative flex items-center justify-between h-16">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -105,7 +105,7 @@ const Navbar = () => {
                 src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
                 alt="AssetPeak"
               />
-              <div className="hidden lg:flex justify-center items-center gap-2 text-lg font-bold text-white">
+              <div className="hidden lg:flex justify-center items-center gap-2 text-lg font-bold ">
               <img
                 className="h-8 w-auto"
                 src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
@@ -117,20 +117,20 @@ const Navbar = () => {
             <div className="hidden sm:block sm:ml-6">
               <div className="flex space-x-4">
                 <Link
-                  className={` text-white px-3 py-2 rounded-md text-sm font-medium  ${pathname === '/' && 'outline outline-indigo-600'}`}
+                  className={` px-3 py-2 rounded-md text-sm font-medium  ${pathname === '/' && ' text-indigo-600'}`}
                   to={"/"}
                 >
                   Home
                 </Link>
                 {!user &&
                 <><Link
-                className={` text-white px-3 py-2 rounded-md text-sm font-medium ${pathname === '/join-as-employee' && 'outline outline-indigo-600'}`}
+                className={`  px-3 py-2 rounded-md text-sm font-medium ${pathname === '/join-as-employee' && ' text-indigo-600'}`}
                 to={"/join-as-employee"}
               >
                 Join as Employee
               </Link>
               <Link
-                className={` text-white px-3 py-2 rounded-md text-sm font-medium ${pathname === '/join-as-HR' && 'outline outline-indigo-600'}`}
+                className={` px-3 py-2 rounded-md text-sm font-medium ${pathname === '/join-as-HR' && ' text-indigo-600'}`}
                 to={"/join-as-HR"}
               >
                 Join as HR Manager
@@ -232,19 +232,22 @@ const Navbar = () => {
       >
         <div className="px-2 pt-2 pb-3 space-y-1 flex flex-col">
           <Link
-            className=" text-white px-3 py-2 rounded-md text-sm font-medium"
+            className=" 
+             px-3 py-2 rounded-md text-sm font-medium"
             to={"/"}
           >
             Home
           </Link>
           <Link
-            className=" text-white px-3 py-2 rounded-md text-sm font-medium"
+            className=" 
+             px-3 py-2 rounded-md text-sm font-medium"
             to={"/join-as-employee"}
           >
             Join as Employee
           </Link>
           <Link
-            className=" text-white px-3 py-2 rounded-md text-sm font-medium"
+            className=" 
+             px-3 py-2 rounded-md text-sm font-medium"
             to={"/join-as-HR"}
           >
             Join as HR Manager
