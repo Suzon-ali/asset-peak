@@ -1,34 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
+import { Toaster } from 'react-hot-toast'
+import Home from './pages/Home/Home'
+import Navbar from './shared/Navbar/Navbar'
+import ErrorPage from './utility/ErrorPage/ErrorPage';
+import Login from './pages/Login/Login';
+
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <BrowserRouter>
+    <Toaster />
+     <div className='bg-white '>
+     <div className="main mx-auto lg:px-0">
+      <Navbar />
+       <div>
+       <Routes>
+        {/* public routes */}
+         <Route path="/" element={<Home />} />
+         <Route path="/login" element={<Login />} />
+
+
+
+        {/* private routes */}
+
+
+
+
+
+
+         <Route path="*" element={<ErrorPage message={"The following route is not found"} />} />
+       </Routes>
+       </div>
+     </div>
+     
+     </div>
+   </BrowserRouter>
   )
 }
 
