@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import useAuth from '../../hooks/useAuth';
 import toast from "react-hot-toast";
 
@@ -8,6 +8,9 @@ const Navbar = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const {user, logOut} = useAuth();
   const userMenuRef = useRef(null);
+  const {pathname} = useLocation();
+
+  console.log(user)
 
 
   const toggleMobileMenu = () => {
@@ -95,16 +98,16 @@ const Navbar = () => {
               </svg>
             </button>
           </div>
-          <div className="flex-1 flex items-center justify-center  sm:items-stretch sm:justify-between ">
+          <div className="flex-1 flex items-center justify-center  sm:items-stretch sm:justify-between ml-10 md:ml-0 ">
             <Link to={'/'} className="flex-shrink-0 flex items-center select-none cursor-pointer">
               <img
                 className="block lg:hidden h-8 w-auto"
                 src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
                 alt="AssetPeak"
               />
-              <div className="flex justify-center items-center gap-2 text-lg font-bold text-white">
+              <div className="hidden lg:flex justify-center items-center gap-2 text-lg font-bold text-white">
               <img
-                className="hidden lg:block h-8 w-auto"
+                className="h-8 w-auto"
                 src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
                 alt="AssetPeak"
               />
@@ -113,35 +116,35 @@ const Navbar = () => {
             </Link>
             <div className="hidden sm:block sm:ml-6">
               <div className="flex space-x-4">
-                <NavLink
-                  className=" text-white px-3 py-2 rounded-md text-sm font-medium"
+                <Link
+                  className={` text-white px-3 py-2 rounded-md text-sm font-medium  ${pathname === '/' && 'outline outline-indigo-600'}`}
                   to={"/"}
                 >
                   Home
-                </NavLink>
+                </Link>
                 {!user &&
-                <><NavLink
-                className=" text-white px-3 py-2 rounded-md text-sm font-medium"
+                <><Link
+                className={` text-white px-3 py-2 rounded-md text-sm font-medium ${pathname === '/join-as-employee' && 'outline outline-indigo-600'}`}
                 to={"/join-as-employee"}
               >
                 Join as Employee
-              </NavLink>
-              <NavLink
-                className=" text-white px-3 py-2 rounded-md text-sm font-medium"
+              </Link>
+              <Link
+                className={` text-white px-3 py-2 rounded-md text-sm font-medium ${pathname === '/join-as-HR' && 'outline outline-indigo-600'}`}
                 to={"/join-as-HR"}
               >
                 Join as HR Manager
-              </NavLink>
-                <NavLink
-                className="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
+              </Link>
+                <Link
+                className="bg-indigo-600 text-white px-3 py-2 rounded-md text-sm font-medium"
                 to={"/login"}
               >
                 Login
-              </NavLink></>}
+              </Link></>}
               </div>
             </div>
           </div>
-          {user && <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+          {user ? <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             <button className="bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
               <span className="sr-only">View notifications</span>
               <svg
@@ -173,7 +176,7 @@ const Navbar = () => {
                   <span className="sr-only">Open user menu</span>
                   <img
                     className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src={user?.photoURL}
                     alt=""
                   />
                 </button>
@@ -186,7 +189,7 @@ const Navbar = () => {
                   aria-labelledby="user-menu-button"
                   tabIndex="-1"
                 >
-                  <a
+                  <Link to={`/profile`}
                     href="#"
                     className="block px-4 py-2 text-sm text-gray-700"
                     role="menuitem"
@@ -194,7 +197,7 @@ const Navbar = () => {
                     id="user-menu-item-0"
                   >
                     Your Profile
-                  </a>
+                  </Link>
                   <a
                     href="#"
                     className="block px-4 py-2 text-sm text-gray-700"
@@ -215,7 +218,12 @@ const Navbar = () => {
                 </div>
               )}
             </div>
-          </div>}
+          </div> : <Link
+            className="bg-indigo-600 md:hidden text-white px-3 py-2 rounded-md text-sm font-medium"
+            to={"/login"}
+          >
+            Login
+          </Link>}
         </div>
       </div>
       <div
@@ -223,30 +231,30 @@ const Navbar = () => {
         id="mobile-menu"
       >
         <div className="px-2 pt-2 pb-3 space-y-1 flex flex-col">
-          <NavLink
+          <Link
             className=" text-white px-3 py-2 rounded-md text-sm font-medium"
             to={"/"}
           >
             Home
-          </NavLink>
-          <NavLink
+          </Link>
+          <Link
             className=" text-white px-3 py-2 rounded-md text-sm font-medium"
             to={"/join-as-employee"}
           >
             Join as Employee
-          </NavLink>
-          <NavLink
+          </Link>
+          <Link
             className=" text-white px-3 py-2 rounded-md text-sm font-medium"
             to={"/join-as-HR"}
           >
             Join as HR Manager
-          </NavLink>
-          <NavLink
-            className="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
+          </Link>
+          <Link
+            className="bg-gray-900 hidden lg:block text-white px-3 py-2 rounded-md text-sm font-medium"
             to={"/login"}
           >
             Login
-          </NavLink>
+          </Link>
         </div>
       </div>
     </nav>

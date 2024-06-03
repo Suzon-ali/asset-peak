@@ -4,10 +4,12 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import useAuth from '../../hooks/useAuth';
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 
-function Login() {
+function JoinasEmployee() {
   const { user,
-    signIn,
+    createUser,
+    updateUserProfile,
     googleSignIn,
     setLoading,
     loading
@@ -15,8 +17,10 @@ function Login() {
   const navigate = useNavigate();
   const [loginError, setLoginError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const axiosPublic = useAxiosPublic();
 
-  const { register, handleSubmit, formState: { errors } } = useForm();
+
+  const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
   useEffect(() => {
     if (user) {
@@ -25,17 +29,40 @@ function Login() {
   }, [user, navigate]);
 
   const onSubmit = async (data) => {
-    setLoginError('');
-    setLoading(true);
     try {
-      await signIn(data.email, data.password);
-      navigate("/");
-      toast.success("Logged in successfully!");
+      setLoading(true);
+      const result = await createUser(data.email, data.password);
+      console.log(result);
+  
+      const loggedUser = result.user;
+      console.log(loggedUser);
+  
+      await updateUserProfile(data.name, data.photoURL);
+  
+      // Create user entry in the database
+      const userInfo = {
+        name: data.name,
+        email: data.email,
+        birthday: data.birthday,
+      };
+  
+      const res = await axiosPublic.post('/users', userInfo);
+  
+      if (res.data.insertedId) {
+        reset();
+        toast.success("Registered successfully!");
+        navigate('/');
+      } else {
+        setLoginError("User registration failed.");
+      }
     } catch (error) {
-      setLoginError(error.message);
+      setLoginError(error.message || "An error occurred during registration.");
+    } finally {
       setLoading(false);
     }
   };
+  
+
 
   const handleGoogleSignIn = () => {
     setLoading(true);
@@ -61,12 +88,13 @@ function Login() {
       </Helmet>
       <div className="max-w-screen-xl m-0 sm:m-20 bg-white shadow sm:rounded-lg flex justify-center flex-1">
         <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
-          <div className="mt-12 flex flex-col items-center">
+          <div className="flex flex-col items-center">
             <h1 className="text-2xl xl:text-3xl font-extrabold">
-              Sign in to AssetPeak
+              Sign up to AssetPeak
             </h1>
             <div className="w-full flex-1 mt-8">
-              <div className="flex flex-col items-center">
+
+            <div className="flex flex-col items-center">
                 <button
                   className="w-full max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline"
                   onClick={handleGoogleSignIn}
@@ -95,16 +123,26 @@ function Login() {
                 </button>
               </div>
 
-              <div className="my-12 border-b text-center">
+              <div className="mt-4 mb-7 border-b text-center">
                 <div
                   className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2"
                 >
-                  Or sign in with email
+                  Or sign up with email
                 </div>
               </div>
 
               <form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-xs">
-                <div>
+              <div >
+                  <input
+                    {...register("name", { required: "Name is required" })}
+                    className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                    type="text"
+                    placeholder="Full name"
+                  />
+                  {errors.name && <p className="text-red-600 text-xs mt-2">{errors.name.message}</p>}
+                </div>
+
+                <div className="mt-5">
                   <input
                     {...register("email", { required: "Email is required", pattern: { value: /^\S+@\S+$/i, message: "Enter a valid email" } })}
                     className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
@@ -121,6 +159,20 @@ function Login() {
                     placeholder="Password"
                   />
                   {errors.password && <p className="text-red-600 text-xs mt-2">{errors.password.message}</p>}
+                </div>
+                <div className="mt-5">
+                  <div className="flex items-center w-full rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white">
+                  <input
+                    {...register("birthday", { required: "Birthday is required" })}
+                    className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                    type={"date"}
+                    placeholder="Date"
+                  />
+                  <div className="flex justify-center items-center p-4 w-20 h-full border-l">
+                    BirthDay
+                  </div>
+                  </div>
+                  {errors.date && <p className="text-red-600 text-xs mt-2">{errors.date.message}</p>}
                 </div>
                 <div className="mt-5 flex items-center">
                   <input
@@ -148,7 +200,7 @@ function Login() {
                     <circle cx="8.5" cy="7" r="4" />
                     <path d="M20 8v6M23 11h-6" />
                   </svg>
-                  <span className="ml-3">Sign In</span></> : <div
+                  <span className="ml-3">Sign Up</span></> : <div
                   className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
                   role="status">
                   <span
@@ -179,4 +231,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default JoinasEmployee;
