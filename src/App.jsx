@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import './App.css';
 import { Toaster } from 'react-hot-toast';
@@ -10,6 +10,7 @@ import JoinasHr from './pages/JoinHr/JoinasHr';
 import JoinasEmployee from './pages/JoinEmployee/JoinasEmployee';
 import RefreshLoader from './utility/Loaders/RefreshLoader';
 import useAuth from './hooks/useAuth';
+import Footer from './shared/Footer/Footer';
 
 function App() {
   const [pageLoading, setPageLoading] = useState(false);
@@ -47,6 +48,7 @@ function App() {
               <Route path="*" element={<ErrorPage message={"The following route is not found"} />} />
             </Routes>
           </div>
+          <Footer />
         </div>
       </div>
     </BrowserRouter>

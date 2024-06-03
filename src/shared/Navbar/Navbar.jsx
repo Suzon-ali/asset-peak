@@ -35,6 +35,7 @@ const Navbar = () => {
         .catch((error) => {
           toast.error(error.message);
         });
+        setIsUserMenuOpen(false);
   }
 
   useEffect(() => {
@@ -111,7 +112,7 @@ const Navbar = () => {
                 src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
                 alt="AssetPeak"
               />
-              <span>AssetPeak</span>
+              <span className="text-indigo-600">AssetPeak</span>
               </div>
             </Link>
             <div className="hidden sm:block sm:ml-6">
@@ -183,32 +184,33 @@ const Navbar = () => {
               </div>
               {isUserMenuOpen && (
                 <div
-                  className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  className="z-10 origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
                   role="menu"
                   aria-orientation="vertical"
                   aria-labelledby="user-menu-button"
                   tabIndex="-1"
                 >
+                  
                   <Link to={`/profile`}
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700"
+                    
+                    className="block px-4 py-2 text-sm text-gray-700 hover:text-indigo-600"
                     role="menuitem"
                     tabIndex="-1"
                     id="user-menu-item-0"
                   >
-                    Your Profile
+                    {user?.displayName} (Profile)
                   </Link>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700"
+                  <Link to={'/setting'}
+                   
+                    className="block px-4 py-2 text-sm text-gray-700 hover:text-indigo-600"
                     role="menuitem"
                     tabIndex="-1"
                     id="user-menu-item-1"
                   >
                     Settings
-                  </a>
+                  </Link>
                   <button onClick={handleLogout}
-                    className="block px-4 py-2 text-sm text-gray-700"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:text-indigo-600"
                     role="menuitem"
                     tabIndex="-1"
                     id="user-menu-item-2"
