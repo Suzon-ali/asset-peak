@@ -14,6 +14,11 @@ import Footer from './shared/Footer/Footer';
 import MyAsset from './pages/Employee/MyAssets/MyAsset';
 import MyTeam from './pages/Employee/MyTeam/MyTeam';
 import AssetRequest from './pages/Employee/AssetRequest/AssetRequest';
+import EmplayeeRoute from './privateRoutes/EmplayeeRoute';
+import HrRoute from './privateRoutes/HrRoute';
+import CustomRequestList from './pages/Hr/CustomRequestList/CustomRequestList';
+import MyEmployeeList from './pages/Hr/MyEmployeeList/MyEmployeeList';
+import AddEmployee from './pages/Hr/AddEmployee/AddEmployee';
 
 function App() {
   const [pageLoading, setPageLoading] = useState(false);
@@ -47,17 +52,17 @@ function App() {
               <Route path="/join-as-employee" element={<JoinasEmployee />} />
 
               {/* Employee Routes */}
-              <Route path="/my-assets" element={<MyAsset />} />
-              <Route path="/my-team" element={<MyTeam />} />
-              <Route path="/request-for-asset" element={<AssetRequest />} />
+              <Route path="/my-assets" element={<EmplayeeRoute><MyAsset /></EmplayeeRoute>} />
+              <Route path="/my-team" element={<EmplayeeRoute><MyTeam /></EmplayeeRoute>} />
+              <Route path="/request-for-asset" element={<EmplayeeRoute><AssetRequest /></EmplayeeRoute>} />
 
               {/* Hr Routes */}
-              <Route path="/asset-list" element={<MyAsset />} />
-              <Route path="/add-asset" element={<MyTeam />} />
-              <Route path="/all-request" element={<AssetRequest />} />
-              <Route path="/custom-requests-list" element={<AssetRequest />} />
-              <Route path="/my-employee-list" element={<AssetRequest />} />
-              <Route path="/add-employee" element={<AssetRequest />} />
+              <Route path="/asset-list" element={<HrRoute><MyAsset /></HrRoute>} />
+              <Route path="/add-asset" element={<HrRoute><MyTeam /></HrRoute>} />
+              <Route path="/all-request" element={<HrRoute><AssetRequest /></HrRoute>} />
+              <Route path="/custom-requests-list" element={<HrRoute ><CustomRequestList /></HrRoute>} />
+              <Route path="/my-employee-list" element={<HrRoute > <MyEmployeeList />  </HrRoute>} />
+              <Route path="/add-employee" element={<HrRoute > <AddEmployee /> </HrRoute>} />
 
 
               <Route path="*" element={<ErrorPage message={"The following route is not found"} />} />
