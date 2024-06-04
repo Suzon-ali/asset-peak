@@ -11,6 +11,9 @@ import JoinasEmployee from './pages/JoinEmployee/JoinasEmployee';
 import RefreshLoader from './utility/Loaders/RefreshLoader';
 import useAuth from './hooks/useAuth';
 import Footer from './shared/Footer/Footer';
+import MyAsset from './pages/Employee/MyAssets/MyAsset';
+import MyTeam from './pages/Employee/MyTeam/MyTeam';
+import AssetRequest from './pages/Employee/AssetRequest/AssetRequest';
 
 function App() {
   const [pageLoading, setPageLoading] = useState(false);
@@ -31,7 +34,7 @@ function App() {
   return (
     <BrowserRouter>
       <Toaster />
-      {pageLoading || loading && <RefreshLoader />} {/* Loader component */}
+      {pageLoading || loading && <RefreshLoader />} 
       <div >
         <div className="main mx-auto lg:px-0">
           <Navbar />
@@ -43,7 +46,19 @@ function App() {
               <Route path="/join-as-HR" element={<JoinasHr />} />
               <Route path="/join-as-employee" element={<JoinasEmployee />} />
 
-              {/* private routes */}
+              {/* Employee Routes */}
+              <Route path="/my-assets" element={<MyAsset />} />
+              <Route path="/my-team" element={<MyTeam />} />
+              <Route path="/request-for-asset" element={<AssetRequest />} />
+
+              {/* Hr Routes */}
+              <Route path="/asset-list" element={<MyAsset />} />
+              <Route path="/add-asset" element={<MyTeam />} />
+              <Route path="/all-request" element={<AssetRequest />} />
+              <Route path="/custom-requests-list" element={<AssetRequest />} />
+              <Route path="/my-employee-list" element={<AssetRequest />} />
+              <Route path="/add-employee" element={<AssetRequest />} />
+
 
               <Route path="*" element={<ErrorPage message={"The following route is not found"} />} />
             </Routes>

@@ -44,6 +44,7 @@ function JoinasEmployee() {
         name: data.name,
         email: data.email,
         birthday: data.birthday,
+        role: 'employee'
       };
   
       const res = await axiosPublic.post('/users', userInfo);

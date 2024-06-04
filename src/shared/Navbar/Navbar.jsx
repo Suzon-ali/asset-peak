@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 import EmployeeNav from "./EmployeeNav";
 import PublicNav from "./PublicNav";
 import MobileNav from "./MobileNav";
+import useAdmin from "../../hooks/userHr";
+import HrNav from './HrNav';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -12,8 +14,8 @@ const Navbar = () => {
   const { user, logOut } = useAuth();
   const userMenuRef = useRef(null);
   const { pathname } = useLocation();
+  const [role] = useAdmin();
 
-  console.log(user);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -56,7 +58,7 @@ const Navbar = () => {
     <nav className="z-10 w-full border-b border-black/10 pr-3">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
         <div className="relative flex items-center justify-between h-16">
-          <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+          <div className="absolute inset-y-0 left-0 flex items-center lg:hidden">
             <button
               type="button"
               className={`inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white ${
@@ -101,7 +103,7 @@ const Navbar = () => {
               </svg>
             </button>
           </div>
-          <div className="flex-1 flex items-center justify-center  sm:items-stretch sm:justify-between  ">
+          <div className="flex-1 flex items-center justify-center  lg:items-stretch lg:justify-between  ">
             <Link
               to={"/"}
               className="flex-shrink-0 flex items-center select-none cursor-pointer"
@@ -124,7 +126,7 @@ const Navbar = () => {
             <div className="hidden sm:block sm:ml-6">
               <div className="flex space-x-4">
                 <Link
-                  className={` px-3 py-2 rounded-md text-sm font-medium  ${
+                  className={` px-3 py-2 rounded-md text-sm font-medium hidden lg:block ${
                     pathname === "/" && " text-indigo-600"
                   }`}
                   to={"/"}
@@ -132,9 +134,13 @@ const Navbar = () => {
                   Home
                 </Link>
 
-                {user && <EmployeeNav /> }
+                <div className="hidden lg:block">{user && role==='employee' && <EmployeeNav /> }</div>
+                <div className="hidden lg:block">{!user && <PublicNav />}</div>
+                <div className="hidden lg:block">
+                {user && role==='hr' && <HrNav />}
 
-                {!user && <PublicNav />}
+                
+                </div>
               </div>
             </div>
           </div>
@@ -200,7 +206,7 @@ const Navbar = () => {
             </div>
           ) : (
             <Link
-              className="bg-indigo-600 md:hidden text-white px-3 py-2 rounded-md text-sm font-medium"
+              className="bg-indigo-600 lg:hidden text-white px-3 py-2 rounded-md text-sm font-medium"
               to={"/login"}
             >
               Login

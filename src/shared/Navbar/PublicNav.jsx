@@ -4,7 +4,7 @@ const PublicNav = () => {
   const { pathname } = useLocation();
 
   return (
-    <>
+    <div className="flex flex-col lg:flex-row">
       <Link
         className={`  px-3 py-2 rounded-md text-sm font-medium ${
           pathname === "/join-as-employee" && " text-indigo-600"
@@ -22,12 +22,12 @@ const PublicNav = () => {
         Join as HR Manager
       </Link>
       <Link
-        className="bg-indigo-600 text-white px-3 py-2 rounded-md text-sm font-medium"
+        className="bg-indigo-600 text-white px-3 py-2 rounded-md text-sm font-medium hidden lg:block"
         to={"/login"}
       >
         Login
       </Link>
-    </>
+    </div>
   );
 };
 
