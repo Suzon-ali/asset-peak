@@ -4,20 +4,34 @@ import AboutCompany from "./AboutCompany"
 import Banner from "./Banner"
 import OurCustomers from "./OurCustomers"
 import Pricing from "./Pricing"
+import useAuth from '../../hooks/useAuth';
+import PendingRequest from "./Employee/PendingRequest"
+import MonthlyRequest from "./Employee/MonthlyRequest"
+import useAdmin from '../../hooks/userHr';
+import CalenderEvents from "./Employee/CalenderEvents"
 
 const Home = () => {
 
+  const {user} = useAuth();
+  const [role] = useAdmin();
 
   return (
     <>
     <Helmet>
         <title>AssetPeak | Home</title>
       </Helmet>
-    <Banner />
+    {!user && <><Banner />
     <OurCustomers />
     <AboutCompany />
-    <Pricing />
+    <Pricing /></>}
+
+    {user && role === 'employee' && <>
+    <PendingRequest />
+    <MonthlyRequest />
+    <CalenderEvents />
+    </>}
     </>
+    
   )
 }
 

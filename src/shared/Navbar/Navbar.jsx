@@ -125,14 +125,7 @@ const Navbar = () => {
             </Link>
             <div className="hidden sm:block sm:ml-6">
               <div className="flex space-x-4">
-                <Link
-                  className={` px-3 py-2 rounded-md text-sm font-medium hidden lg:block ${
-                    pathname === "/" && " text-indigo-600"
-                  }`}
-                  to={"/"}
-                >
-                  Home
-                </Link>
+                
 
                 <div className="hidden lg:block">{user && role==='employee' && <EmployeeNav /> }</div>
                 <div className="hidden lg:block">{!user && <PublicNav />}</div>
