@@ -19,7 +19,6 @@ function JoinasEmployee() {
   const [showPassword, setShowPassword] = useState(false);
   const axiosPublic = useAxiosPublic();
 
-
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
   useEffect(() => {

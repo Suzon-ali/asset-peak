@@ -19,6 +19,8 @@ import HrRoute from './privateRoutes/HrRoute';
 import CustomRequestList from './pages/Hr/CustomRequestList/CustomRequestList';
 import MyEmployeeList from './pages/Hr/MyEmployeeList/MyEmployeeList';
 import AddEmployee from './pages/Hr/AddEmployee/AddEmployee';
+import Profile from './pages/Profile/Profile';
+import Checkout from './pages/Checkout/Checkout';
 
 function App() {
   const [pageLoading, setPageLoading] = useState(false);
@@ -39,7 +41,10 @@ function App() {
   return (
     <BrowserRouter>
       <Toaster />
-      {pageLoading || loading && <RefreshLoader />} 
+      {pageLoading ||  (loading && !pageLoading) && <RefreshLoader />} 
+
+      
+       
       <div >
         <div className="main mx-auto lg:px-0">
           <Navbar />
@@ -47,9 +52,10 @@ function App() {
             <Routes>
               {/* public routes */}
               <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
+              <Route path="/login" element={<Login pageLoading={pageLoading} loading={loading} />} />
               <Route path="/join-as-HR" element={<JoinasHr />} />
               <Route path="/join-as-employee" element={<JoinasEmployee />} />
+              <Route path="/profile" element={<Profile />} />
 
               {/* Employee Routes */}
               <Route path="/my-assets" element={<EmplayeeRoute><MyAsset /></EmplayeeRoute>} />
@@ -63,6 +69,7 @@ function App() {
               <Route path="/custom-requests-list" element={<HrRoute ><CustomRequestList /></HrRoute>} />
               <Route path="/my-employee-list" element={<HrRoute > <MyEmployeeList />  </HrRoute>} />
               <Route path="/add-employee" element={<HrRoute > <AddEmployee /> </HrRoute>} />
+              <Route path="/checkout" element={<Checkout />} />
 
 
               <Route path="*" element={<ErrorPage message={"The following route is not found"} />} />

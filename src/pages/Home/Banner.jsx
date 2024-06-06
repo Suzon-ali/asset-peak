@@ -34,7 +34,7 @@ const Banner = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % banners.length);
-    }, 5000); // Change slide every 5 seconds
+    }, 5000); 
     return () => clearInterval(interval);
   }, []);
 
@@ -44,7 +44,7 @@ const Banner = () => {
         <div
           key={index}
           className={`absolute w-full h-full transition-opacity duration-1000 ease-in-out ${
-            index === currentIndex ? "opacity-100" : "opacity-0"
+            index === currentIndex ? "opacity-100" : "opacity-0 -z-10"
           } flex lg:flex-row flex-col items-center`}
         >
           <div className="lg:w-1/2 flex flex-col items-left justify-center p-4 lg:pr-32">
