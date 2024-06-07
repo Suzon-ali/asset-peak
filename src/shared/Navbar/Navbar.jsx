@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import EmployeeNav from "./EmployeeNav";
 import PublicNav from "./PublicNav";
 import MobileNav from "./MobileNav";
-import useAdmin from "../../hooks/userHr";
+import useAdmin from "../../hooks/useAdmin";
 import HrNav from './HrNav';
 
 const Navbar = () => {

@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+/* eslint-disable react/prop-types */
+
 import useAuth from "../../hooks/useAuth";
 import EmployeeNav from "./EmployeeNav";
-import useAdmin from "../../hooks/userHr";
+import useAdmin from "../../hooks/useAdmin";
 import PublicNav from "./PublicNav";
 import HrNav from "./HrNav";
 

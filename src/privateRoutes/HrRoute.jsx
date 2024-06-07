@@ -1,7 +1,8 @@
 
 import useAuth from '../hooks/useAuth';
-import useAdmin from '../hooks/userHr';
+import useAdmin from '../hooks/useAdmin';
 import { Navigate } from 'react-router-dom';
+
 
 const HrRoute = ({children}) => {
     const { user } = useAuth();

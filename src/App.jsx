@@ -20,6 +20,7 @@ import MyEmployeeList from './pages/Hr/MyEmployeeList/MyEmployeeList';
 import AddEmployee from './pages/Hr/AddEmployee/AddEmployee';
 import Profile from './pages/Profile/Profile';
 import Checkout from './pages/Checkout/Checkout';
+import Payment from './pages/Checkout/Payment';
 
 function App() {
   const [pageLoading, setPageLoading] = useState(false);
@@ -65,7 +66,7 @@ function App() {
               <Route path="/all-request" element={<HrRoute><AssetRequest /></HrRoute>} />
               <Route path="/my-employee-list" element={<HrRoute > <MyEmployeeList />  </HrRoute>} />
               <Route path="/add-employee" element={<HrRoute > <AddEmployee /> </HrRoute>} />
-              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/checkout" element={<Payment />} />
 
 
               <Route path="*" element={<ErrorPage message={"The following route is not found"} />} />

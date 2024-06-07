@@ -7,7 +7,7 @@ import Pricing from "./Pricing"
 import useAuth from '../../hooks/useAuth';
 import PendingRequest from "./Employee/PendingRequest"
 import MonthlyRequest from "./Employee/MonthlyRequest"
-import useAdmin from '../../hooks/userHr';
+import useAdmin from '../../hooks/useAdmin';
 import CalenderEvents from "./Employee/CalenderEvents"
 
 const Home = () => {
