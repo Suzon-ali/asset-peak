@@ -74,7 +74,7 @@ function JoinasHr() {
         if (res.data.insertedId) {
           reset();
           toast.success("Registered successfully!");
-          navigate('/');
+          navigate('/checkout');
         } else {
           setLoginError("User registration failed.");
         }

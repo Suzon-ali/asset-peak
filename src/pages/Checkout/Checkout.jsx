@@ -16,6 +16,7 @@ const Checkout = () => {
     const { user, loading } = useAuth();
     const navigate = useNavigate();
 
+
     const { data, error: queryError, isLoading: queryLoading, refetch } = useQuery({
         queryKey: ['user', user?.email],
         queryFn: async () => {
@@ -24,18 +25,32 @@ const Checkout = () => {
         },
         enabled: !!user?.email && !loading,
         retry: false,
-      });
+    });
 
-    const totalPrice = data?.package;
+    const totalPrice = parseInt(data?.package);
 
-    console.log(totalPrice)
+    let max_employee;
+
+    if (totalPrice === 5) {
+        max_employee = 5;
+    } else if (totalPrice === 8) {
+        max_employee = 10;
+    } else if (totalPrice === 15) {
+        max_employee = 20;
+    } else {
+        
+        max_employee = 0;
+    }
 
     useEffect(() => {
         if (totalPrice > 0) {
             axiosSecure.post('/create-payment-intent', { price: totalPrice })
                 .then(res => {
-                    console.log(res.data.clientSecret);
+                    console.log('Client Secret:', res.data.clientSecret);
                     setClientSecret(res.data.clientSecret);
+                })
+                .catch(error => {
+                    console.error('Error creating payment intent:', error);
                 });
         }
     }, [axiosSecure, totalPrice]);
@@ -59,10 +74,10 @@ const Checkout = () => {
         });
 
         if (error) {
-            console.log('payment error', error);
+            console.log('Payment Error:', error);
             setError(error.message);
         } else {
-            console.log('payment method', paymentMethod);
+            console.log('Payment Method:', paymentMethod);
             setError('');
         }
 
@@ -77,11 +92,11 @@ const Checkout = () => {
         });
 
         if (confirmError) {
-            console.log('confirm error');
+            console.log('Confirm Error:', confirmError);
         } else {
-            console.log('payment intent', paymentIntent);
+            console.log('Payment Intent:', paymentIntent);
             if (paymentIntent.status === 'succeeded') {
-                console.log('transaction id', paymentIntent.id);
+                console.log('Transaction ID:', paymentIntent.id);
                 setTransactionId(paymentIntent.id);
 
                 const payment = {
@@ -92,18 +107,30 @@ const Checkout = () => {
                     status: 'pending',
                 };
 
-                const res = await axiosSecure.post('/payments', payment);
-                console.log('payment saved', res.data);
-                if (res.data?.paymentResult?.insertedId) {
-                    toast.success("Payment successful!");
-                    navigate('/dashboard/paymentHistory');
+                try {
+                    const res = await axiosSecure.post('/payments', payment);
+                    console.log('Payment Saved:', res.data);
+                    if (res.data?.paymentResult?.insertedId) {
+                        toast.success("Payment successful!");
+                        navigate('/checkout/history');
+                        const updateRes = await axiosSecure.put(`/payments/${res.data.paymentResult.insertedId}`, { status: 'success' });
+
+                        const userUpdateResponse = await axiosSecure.put(`/users?email=${user?.email}`, {
+                            paid: true,
+                            enroll_expired_in: 30,
+                            max_employee: max_employee
+                        });
+
+                    }
+                } catch (error) {
+                    console.error('Error saving payment:', error);
                 }
             }
         }
     };
 
     return (
-        <div className="flex justify-center items-center min-h-96  p-6">
+        <div className="flex justify-center items-center min-h-96 p-6">
             <div className="w-full max-w-md bg-white shadow-md rounded-lg p-6">
                 <h2 className="text-2xl font-semibold text-center mb-4">Checkout</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
