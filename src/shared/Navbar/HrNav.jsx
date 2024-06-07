@@ -41,15 +41,6 @@ const HrNav = () => {
 
       <Link
         className={` px-3 py-2 rounded-md text-sm font-medium ${
-          pathname === "/custom-requests-list" && " text-indigo-600"
-        }`}
-        to={"/custom-requests-list"}
-      >
-        Custom Request List
-      </Link>
-
-      <Link
-        className={` px-3 py-2 rounded-md text-sm font-medium ${
           pathname === "/my-employee-list" && " text-indigo-600"
         }`}
         to={"/my-employee-list"}

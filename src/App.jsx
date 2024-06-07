@@ -16,7 +16,6 @@ import MyTeam from './pages/Employee/MyTeam/MyTeam';
 import AssetRequest from './pages/Employee/AssetRequest/AssetRequest';
 import EmplayeeRoute from './privateRoutes/EmplayeeRoute';
 import HrRoute from './privateRoutes/HrRoute';
-import CustomRequestList from './pages/Hr/CustomRequestList/CustomRequestList';
 import MyEmployeeList from './pages/Hr/MyEmployeeList/MyEmployeeList';
 import AddEmployee from './pages/Hr/AddEmployee/AddEmployee';
 import Profile from './pages/Profile/Profile';
@@ -42,8 +41,6 @@ function App() {
     <BrowserRouter>
       <Toaster />
       {pageLoading ||  (loading && !pageLoading) && <RefreshLoader />} 
-
-      
        
       <div >
         <div className="main mx-auto lg:px-0">
@@ -66,7 +63,6 @@ function App() {
               <Route path="/asset-list" element={<HrRoute><MyAsset /></HrRoute>} />
               <Route path="/add-asset" element={<HrRoute><MyTeam /></HrRoute>} />
               <Route path="/all-request" element={<HrRoute><AssetRequest /></HrRoute>} />
-              <Route path="/custom-requests-list" element={<HrRoute ><CustomRequestList /></HrRoute>} />
               <Route path="/my-employee-list" element={<HrRoute > <MyEmployeeList />  </HrRoute>} />
               <Route path="/add-employee" element={<HrRoute > <AddEmployee /> </HrRoute>} />
               <Route path="/checkout" element={<Checkout />} />
