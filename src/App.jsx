@@ -19,8 +19,11 @@ import HrRoute from './privateRoutes/HrRoute';
 import MyEmployeeList from './pages/Hr/MyEmployeeList/MyEmployeeList';
 import AddEmployee from './pages/Hr/AddEmployee/AddEmployee';
 import Profile from './pages/Profile/Profile';
-import Checkout from './pages/Checkout/Checkout';
 import Payment from './pages/Checkout/Payment';
+import AddAsset from './pages/Hr/AddAsset/AddAsset';
+import CheoutHistory from './pages/Checkout/CheoutHistory';
+import AllRequest from './pages/Hr/AllRequest/AllRequest';
+import AssetList from './pages/Hr/AssetList/AssetList';
 
 function App() {
   const [pageLoading, setPageLoading] = useState(false);
@@ -61,14 +64,16 @@ function App() {
               <Route path="/request-for-asset" element={<EmplayeeRoute><AssetRequest /></EmplayeeRoute>} />
 
               {/* Hr Routes */}
-              <Route path="/asset-list" element={<HrRoute><MyAsset /></HrRoute>} />
-              <Route path="/add-asset" element={<HrRoute><MyTeam /></HrRoute>} />
-              <Route path="/all-request" element={<HrRoute><AssetRequest /></HrRoute>} />
+              <Route path="/asset-list" element={<HrRoute><AssetList /></HrRoute>} />
+              <Route path="/add-asset" element={<HrRoute><AddAsset /></HrRoute>} />
+              <Route path="/all-request" element={<HrRoute><AllRequest /></HrRoute>} />
               <Route path="/my-employee-list" element={<HrRoute > <MyEmployeeList />  </HrRoute>} />
               <Route path="/add-employee" element={<HrRoute > <AddEmployee /> </HrRoute>} />
               <Route path="/checkout" element={<Payment />} />
+              <Route path="/checkout/history" element={<CheoutHistory />} />
 
 
+              <Route path="*" element={<ErrorPage message={"The following route is not found"} />} />
               <Route path="*" element={<ErrorPage message={"The following route is not found"} />} />
             </Routes>
           </div>

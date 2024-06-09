@@ -41,7 +41,7 @@ function JoinasEmployee() {
       // Create user entry in the database
       const userInfo = {
         name: data.name,
-        email: data.email,
+        email: data.email.toLowerCase(),
         birthday: data.birthday,
         role: 'employee'
       };

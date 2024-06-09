@@ -16,6 +16,8 @@ const Navbar = () => {
   const { pathname } = useLocation();
   const [role] = useAdmin();
 
+  console.log("role", role)
+
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);

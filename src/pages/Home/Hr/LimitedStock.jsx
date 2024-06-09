@@ -2,7 +2,7 @@
 
 import  { useState } from 'react';
 
-const AllRequest = () => {
+const LimitedStock = () => {
   // Dummy data for demonstration purposes
   const [requests, setRequests] = useState([
     {
@@ -28,24 +28,12 @@ const AllRequest = () => {
   );
 
   // Handle search input change
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
+
 
   return (
     <div className="max-w-6xl mx-auto py-8 px-4">
-      <h1 className="text-3xl font-semibold mb-6">All Requests</h1>
+      <h1 className="text-3xl font-semibold mb-6">Limited Stock</h1>
       
-      {/* Search Section */}
-      <div className="mb-6">
-        <input
-          type="text"
-          placeholder="Search by requester name or email"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={searchQuery}
-          onChange={handleSearchChange}
-        />
-      </div>
       
       {/* Request List Section */}
       <div className="overflow-x-auto">
@@ -70,7 +58,7 @@ const AllRequest = () => {
                 <td className="border px-4 py-2">{request.requestDate}</td>
                 <td className="border px-4 py-2">{request.additionalNote}</td>
                 <td className="border px-4 py-2">{request.status}</td>
-                <td className="border px-4 py-2">
+                <td className="border px-4 py-4 lg:flex">
                   <button className="px-2 py-1 bg-green-500 text-white rounded-md mr-2">Approve</button>
                   <button className="px-2 py-1 bg-red-500 text-white rounded-md">Reject</button>
                 </td>
@@ -83,4 +71,4 @@ const AllRequest = () => {
   );
 };
 
-export default AllRequest;
+export default LimitedStock;

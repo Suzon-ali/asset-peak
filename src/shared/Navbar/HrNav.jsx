@@ -28,7 +28,7 @@ const HrNav = () => {
         }`}
         to={"/add-asset"}
       >
-        Add and Asset
+        Add an Asset
       </Link>
       <Link
         className={` px-3 py-2 rounded-md text-sm font-medium ${
