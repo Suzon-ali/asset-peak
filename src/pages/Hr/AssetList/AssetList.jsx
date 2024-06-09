@@ -6,12 +6,11 @@ import { useEffect, useState } from "react";
 
 const AssetList = () => {
   const axiosSecure = useAxiosSecure();
-  const axiosPublic = useAxiosSecure();
   const { user, loading } = useAuth();
   const [type, setType] = useState("");
   const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState("")
+  const [sortBy, setSortBy] = useState("");
 
   let query = "";
   if (type !== "") {
@@ -54,7 +53,7 @@ const AssetList = () => {
 
   useEffect(() => {
     refetch();
-  }, [search, type, status,sortBy , refetch]);
+  }, [search, type, status, sortBy, refetch]);
 
   console.log("data", assets);
   // Function to handle updating an asset
@@ -87,7 +86,7 @@ const AssetList = () => {
       <div className="lg:flex items-center justify-between">
         {/* Filter Section */}
         <div className="mb-6 flex gap-4 items-center">
-          <label className="block font-semibold mb-2">Filter:</label>
+          <label className="block font-semibold ">Filter:</label>
           <div>
             <label className="inline-flex items-center mr-4">
               <input
@@ -128,8 +127,11 @@ const AssetList = () => {
         {/* Sorting Section */}
         <div className="mb-6 flex items-center gap-2">
           <label className="block font-semibold mb-2">Sort by:</label>
-          <select value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)} className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border-blue-500">
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border-blue-500"
+          >
             <option value="">Default</option>
             <option value="low">Quantity - Low to High</option>
             <option value="high">Quantity - High to Low</option>

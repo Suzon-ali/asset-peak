@@ -1,39 +1,48 @@
-
-import  { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import useAuth from '../../../hooks/useAuth';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import useMyInfo from '../../../hooks/useMyInfo';
+import useAxiosPublic from '../../../hooks/useAxiosPublic';
 
 const MyEmployeeList = () => {
-  
-  const [teamMembers, setTeamMembers] = useState([
-    {
-      id: 1,
-      name: 'John Doe',
-      memberType: 'Admin',
-      imageUrl: 'https://randomuser.me/api/portraits/men/1.jpg',
-    },
-    {
-      id: 1,
-      name: 'John Doe',
-      memberType: 'Admin',
-      imageUrl: 'https://randomuser.me/api/portraits/men/1.jpg',
-    },
-   
-  ]);
+  const { loading } = useAuth();
+  const axiosSecure = useAxiosSecure();
+  const axiosPublic = useAxiosPublic();
+  const [myInfo] = useMyInfo();
+  const { company_name } = myInfo || {};
 
-  const handleRemoveMember = (memberId) => {
-    setTeamMembers((prevMembers) =>
-      prevMembers.filter((member) => member.id !== memberId)
-    );
-   
-  };
+  const {
+    data: teamMembers,
+    isLoading: isAssetsLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ['teamMembers', company_name],
+    enabled: !!company_name && !loading,
+    queryFn: async () => {
+      try {
+        const res = await axiosPublic.get(`/users/team?company_name=${company_name}`);
+        return res.data;
+      } catch (error) {
+        console.error('Error fetching team members:', error);
+        throw error;
+      }
+    },
+  });
+
+  console.log(teamMembers)
+
+  if (isAssetsLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="max-w-4xl mx-auto py-8">
       <h2 className="text-3xl font-semibold mb-6">Team Members</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {teamMembers.map((member) => (
+        {teamMembers && teamMembers.map((member) => (
           <div
-            key={member.id}
+            key={member._id} // Ensure to use a unique key
             className="bg-white rounded-lg shadow-md overflow-hidden"
           >
             <img
@@ -46,7 +55,7 @@ const MyEmployeeList = () => {
               <p className="text-gray-500 mb-2">{member.memberType}</p>
               <button
                 className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-                onClick={() => handleRemoveMember(member.id)}
+                // onClick={() => handleRemoveMember(member.id)}
               >
                 Remove From Team
               </button>

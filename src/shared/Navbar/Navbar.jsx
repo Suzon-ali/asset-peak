@@ -7,6 +7,7 @@ import PublicNav from "./PublicNav";
 import MobileNav from "./MobileNav";
 import useAdmin from "../../hooks/useAdmin";
 import HrNav from './HrNav';
+import useMyInfo from "../../hooks/useMyInfo";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -15,6 +16,8 @@ const Navbar = () => {
   const userMenuRef = useRef(null);
   const { pathname } = useLocation();
   const [role] = useAdmin();
+  const [myInfo] = useMyInfo();
+  const {company_logo , company_name} = myInfo || {};
 
   console.log("role", role)
 
@@ -110,20 +113,23 @@ const Navbar = () => {
               to={"/"}
               className="flex-shrink-0 flex items-center select-none cursor-pointer"
             >
+              
+              <>
               <img
                 className="block lg:hidden h-8 w-auto"
-                src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
-                alt="AssetPeak"
+                src={company_logo ? company_logo : 'https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg'}
+                alt={company_name ? company_name : "AssetPeak"}
               />
-              <span className="text-indigo-600 font-semibold ml-2  lg:hidden">AssetPeak</span>
+              <span className="text-indigo-600 font-semibold ml-2  lg:hidden">{company_name ? company_name : "AssetPeak"}</span>
               <div className="hidden lg:flex justify-center items-center gap-2 text-lg font-bold ">
                 <img
                   className="h-8 w-auto"
-                  src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
-                  alt="AssetPeak"
+                  src={company_logo ? company_logo : 'https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg'}
+                  alt={company_name ? company_name : "AssetPeak"}
                 />
-                <span className="text-indigo-600">AssetPeak</span>
+                <span className="text-indigo-600">{company_name ? company_name : "AssetPeak"}</span>
               </div>
+              </>
             </Link>
             <div className="hidden sm:block sm:ml-6">
               <div className="flex space-x-4">

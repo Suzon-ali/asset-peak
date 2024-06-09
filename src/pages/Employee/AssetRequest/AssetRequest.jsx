@@ -3,37 +3,66 @@ import { useEffect, useState } from 'react';
 import useAuth from '../../../hooks/useAuth';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { Helmet } from 'react-helmet';
+import { useQuery } from '@tanstack/react-query';
 
 
 function AssetRequest() {
-  const { user } = useAuth();
-  const axiosSecure = useAxiosSecure()
-  const [requestedAssets, setRequestedAssets] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState("");
-  const [filterType, setFilterType] = useState("");
+  
+  const axiosSecure = useAxiosSecure();
+  const { user, loading } = useAuth();
+  const [type, setType] = useState("");
+  const [status, setStatus] = useState("");
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("");
+
+  let query = "";
+  if (type !== "") {
+    query += `&productType=${type}`;
+  }
+  if (status !== "") {
+    query += `&status=${status}`;
+  }
+  if (search !== "") {
+    query += `&productName=${search}`;
+  }
+  if (sortBy !== "") {
+    query += `&sortBy=${sortBy}`;
+  }
+
+  console.log(query);
+
+  const {
+    data: assets,
+    isLoading: isAssetsLoading,
+    refetch,
+  } = useQuery({
+    queryKey: [user?.email, "assets"],
+    enabled: user?.email !== undefined && !loading,
+    queryFn: async () => {
+      try {
+        if (!user?.email) {
+          throw new Error("User email is not available.");
+        }
+        const res = await axiosSecure.get(
+          `/assets?productProvider=${user.email}${query}`
+        );
+        return res.data;
+      } catch (error) {
+        console.error("Error fetching assets:", error);
+        throw error;
+      }
+    },
+  });
 
   useEffect(() => {
-    const fetchRequestedAssets = async () => {
-      try {
-        const response = await axiosSecure.get("/my-requested-assets", {
-          params: { searchTerm, filterStatus, filterType },
-        });
-        setRequestedAssets(response.data);
-      } catch (error) {
-        console.error("Error fetching requested assets:", error);
-      }
-    };
+    refetch();
+  }, [search, type, status, sortBy, refetch]);
 
-    fetchRequestedAssets();
-  }, [searchTerm, filterStatus, filterType, axiosSecure]);
 
   const handleCancelRequest = async (assetId) => {
     try {
       await axiosSecure.delete(`/assets/${assetId}/request`);
-      setRequestedAssets((prevAssets) =>
-        prevAssets.filter((asset) => asset.id !== assetId)
-      );
+      
     } catch (error) {
       console.error("Error canceling request:", error);
     }
@@ -50,7 +79,7 @@ function AssetRequest() {
   return (
     <>
       <Helmet>
-        <title>My Requested Assets</title>
+        <title>Request for Asset</title>
       </Helmet>
       <div className="max-w-screen-xl m-0 py-10 shadow sm:rounded-lg flex justify-center flex-1">
         <div className="lg:w-4/5 ">
@@ -62,8 +91,8 @@ function AssetRequest() {
             <div className="w-full mt-8 mb-6">
               <input
                 type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search by name..."
                 className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
               />
@@ -71,8 +100,8 @@ function AssetRequest() {
             {/* Filter Section */}
             <div className="w-full flex justify-between mb-6 gap-4">
               <select
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
                 className="w-1/2 px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
               >
                 <option value="">Filter by status</option>
@@ -80,8 +109,8 @@ function AssetRequest() {
                 <option value="approved">Approved</option>
               </select>
               <select
-                value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
+                value={type}
+                onChange={(e) => setType(e.target.value)}
                 className="w-1/2 px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
               >
                 <option value="">Filter by type</option>
@@ -101,25 +130,22 @@ function AssetRequest() {
                       Asset Type
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Request Date
+                    Availability
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Approval Date
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Request Status
+                    Request Button
                     </th>
                     <th className="px-6 py-3"></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {requestedAssets.map((asset) => (
+                  {assets && assets.map((asset) => (
                     <tr key={asset.id} className="border-b border-gray-200">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {asset.name}
+                        {asset.productName}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {asset.type}
+                        {asset.productType}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {asset.requestDate}
