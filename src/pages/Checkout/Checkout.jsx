@@ -129,6 +129,10 @@ const Checkout = () => {
         }
     };
 
+    if(!user){
+        navigate('/')
+    }
+
     return (
         <div className="flex justify-center items-center min-h-96 p-6">
             <div className="w-full max-w-md bg-white shadow-md rounded-lg p-6">

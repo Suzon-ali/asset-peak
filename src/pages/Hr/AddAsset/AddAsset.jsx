@@ -5,6 +5,7 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAxiosPublic from "../../../hooks/useAxiosPublic";
 import useAuth from "../../../hooks/useAuth";
 import Spinner from "../../../utility/Loaders/Spinner";
+import useMyInfo from "../../../hooks/useMyInfo";
 
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
@@ -21,6 +22,8 @@ const AddAsset = () => {
   const axiosPublic = useAxiosPublic();
   const { user } = useAuth();
   const [addLaoding, setAddLoading] = useState(false);
+  const [myInfo] = useMyInfo();
+
 
   const onSubmit = async (data) => {
     setAddLoading(true);
@@ -42,6 +45,7 @@ const AddAsset = () => {
         productQuantity: parseInt(data.productQuantity),
         productProvider: user?.email,
         productAddedDate: new Date(),
+        productCompanyName: myInfo?.company_name
       };
 
       const res = await axiosSecure.post("/assets", asset);

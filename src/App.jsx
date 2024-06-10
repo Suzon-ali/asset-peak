@@ -24,6 +24,7 @@ import AddAsset from './pages/Hr/AddAsset/AddAsset';
 import CheoutHistory from './pages/Checkout/CheoutHistory';
 import AllRequest from './pages/Hr/AllRequest/AllRequest';
 import AssetList from './pages/Hr/AssetList/AssetList';
+import AssetPDF from './pages/Employee/MyAssets/AssetPDF';
 
 function App() {
   const [pageLoading, setPageLoading] = useState(false);
@@ -57,6 +58,7 @@ function App() {
               <Route path="/join-as-HR" element={<JoinasHr />} />
               <Route path="/join-as-employee" element={<JoinasEmployee />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/print" element={<AssetPDF />} />
 
               {/* Employee Routes */}
               <Route path="/my-assets" element={<EmplayeeRoute><MyAsset /></EmplayeeRoute>} />
