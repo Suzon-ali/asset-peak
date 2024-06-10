@@ -3,6 +3,9 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import moment from "moment";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import Modal from "./Modal";
+import UpdateModal from "./UpdateModal";
 
 const AssetList = () => {
   const axiosSecure = useAxiosSecure();
@@ -11,6 +14,11 @@ const AssetList = () => {
   const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("");
+  const [assetId, setAssetId] = useState(null);
+
+  const [showModal, setShowModal] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [assetIdToDelete, setAssetIdToDelete] = useState(null);
 
   let query = "";
   if (type !== "") {
@@ -26,7 +34,6 @@ const AssetList = () => {
     query += `&sortBy=${sortBy}`;
   }
 
-  console.log(query);
 
   const {
     data: assets,
@@ -55,18 +62,42 @@ const AssetList = () => {
     refetch();
   }, [search, type, status, sortBy, refetch]);
 
-  console.log("data", assets);
-  // Function to handle updating an asset
+  
   const handleUpdateAsset = (assetId) => {
-    // Perform update logic
+    setShowUpdateModal(true);
+    setAssetId(assetId)
     console.log("Update Asset:", assetId);
   };
 
-  // Function to handle deleting an asset
-  const handleDeleteAsset = (assetId) => {
-    // Perform delete logic
-    console.log("Delete Asset:", assetId);
+
+  const handleDeleteAsset = async (assetId) => {
+    setAssetIdToDelete(assetId);
+    setShowModal(true);
   };
+
+  const handleConfirmDelete = async () => {
+    try {
+      const res = await axiosSecure.delete(`/assets/${assetIdToDelete}`);
+      console.log(res);
+      if (res.status === 200) {
+        toast.success("Deleted");
+        refetch();
+      } else {
+        toast.error("Failed to delete asset");
+      }
+    } catch (error) {
+      console.error("Error deleting asset:", error);
+      toast.error("Failed to delete asset");
+    } finally {
+      setShowModal(false);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setShowModal(false);
+    setAssetIdToDelete(null);
+  };
+
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-2 lg:px-0">
@@ -187,14 +218,14 @@ const AssetList = () => {
                   <td className="px-6 py-4 whitespace-nowrap space-x-2">
                     <button
                       className="text-blue-500 hover:text-blue-600"
-                      onClick={() => handleUpdateAsset(asset.id)}
+                      onClick={() => handleUpdateAsset(asset._id)}
                     >
                       Update
                     </button>
 
                     <button
                       className="text-red-500 hover:text-red-600"
-                      onClick={() => handleDeleteAsset(asset.id)}
+                      onClick={() => handleDeleteAsset(asset._id)}
                     >
                       Delete
                     </button>
@@ -204,6 +235,20 @@ const AssetList = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Delete conrim Modal */}
+
+      {showModal && (
+        <Modal
+          title="Confirmation"
+          onClose={handleCancelDelete}
+          onConfirm={handleConfirmDelete}
+        >
+          Are you sure you want to delete this asset?
+        </Modal>
+      )}
+
+      {showUpdateModal  && <UpdateModal productListRefetch={refetch} assetId={assetId} setShowUpdateModal={setShowUpdateModal} />}
     </div>
   );
 };

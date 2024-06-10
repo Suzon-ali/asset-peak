@@ -5,13 +5,17 @@ import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import useMyInfo from '../../../hooks/useMyInfo';
 import toast from 'react-hot-toast';
 import Spinner from '../../../utility/Loaders/Spinner';
+import useAxiosPublic from '../../../hooks/useAxiosPublic';
+import { useNavigate } from 'react-router-dom';
 
 const AddEmployee = () => {
   const { loading } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const axiosPublic = useAxiosPublic();
   const [myInfo] = useMyInfo();
-  const { company_name, company_logo } = myInfo || {};
-  const [addEmployeLoading, setAddEmployeLoading] = useState(false)
+  const { company_name, company_logo , max_employee, _id } = myInfo || {};
+  const [addEmployeLoading, setAddEmployeLoading] = useState(false);
+  const navigate = useNavigate();
 
   const [selectedEmployeeIds, setSelectedEmployeeIds] = useState([]);
 
@@ -24,32 +28,76 @@ const AddEmployee = () => {
     },
   });
 
+  const {
+    data: teamMembers,
+    isLoading: isAssetsLoading,
+    refetch: teamRefetch,
+  } = useQuery({
+    queryKey: ['teamMembers', company_name],
+    enabled: !!company_name && !loading,
+    queryFn: async () => {
+      try {
+        const res = await axiosPublic.get(`/users/team?company_name=${company_name}`);
+        return res.data;
+      } catch (error) {
+        console.error('Error fetching team members:', error);
+        throw error;
+      }
+    },
+  });
+
+  const currentTeamMembers = teamMembers?.length;
+  const totalEmployees = (selectedEmployeeIds?.length || 0) + currentTeamMembers;
+
   const handleCheckboxChange = (id) => {
     setSelectedEmployeeIds((prevIds) =>
       prevIds.includes(id) ? prevIds.filter((prevId) => prevId !== id) : [...prevIds, id]
     );
   };
-
+ 
   const handleBulkUpdate = async () => {
-    setAddEmployeLoading(true)
+
+    if (totalEmployees > max_employee) {
+        toast.error("Increase your Limit");
+        return;
+    }else{
+      setAddEmployeLoading(true);
     try {
-      const res = await axiosSecure.put('/users/add-employee', {
-        ids: selectedEmployeeIds,
-        companyName: company_name,
-        company_logo: company_logo
-      });
-      if (res.data.modifiedCount > 0) {
-        toast.success('Company name updated for selected employees');
-        refetch();
-        setSelectedEmployeeIds([]);
-        setAddEmployeLoading(false)
-      }
+        const res = await axiosSecure.put('/users/add-employee', {
+            ids: selectedEmployeeIds,
+            companyName: company_name,
+            company_logo: company_logo
+        });
+        if (res.data.modifiedCount > 0) {
+            toast.success('Company name updated for selected employees');
+            refetch();
+            teamRefetch();
+            setSelectedEmployeeIds([]);
+            setAddEmployeLoading(false);
+        }
     } catch (error) {
-      console.error('Error updating company name:', error);
-      toast.error('Failed to update company name');
-      setAddEmployeLoading(false)
+        console.error('Error updating company name:', error);
+        toast.error('Failed to update company name');
+        setAddEmployeLoading(false);
     }
-  };
+    }
+
+    
+};
+
+const handleSelectPackage = async (package_price) =>{
+
+  const userInfo = {
+    package: package_price
+  }
+  const res = await axiosSecure.put(`/users/update-package/${_id}`, userInfo);
+  console.log(res)
+  if(res.status === 200){
+    navigate('/checkout')
+  }
+}
+
+
 
   return (
     <div className="max-w-5xl mx-auto py-8">
@@ -58,24 +106,25 @@ const AddEmployee = () => {
       {/* Package Section */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <h3 className="text-xl font-semibold mb-4">Package</h3>
-        <p className="mb-4">Current Package Limit: 10 members</p>
+        <p className="mb-4">Current Package Limit: {max_employee}</p>
+        <p className="mb-4">Current Team Members: {currentTeamMembers}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
           {/* Sample packages, replace with actual packages */}
-          <div className="bg-gray-100 p-4 rounded-lg flex items-center justify-between cursor-pointer hover:bg-gray-200">
+          <div className={`bg-gray-100 p-4 rounded-lg flex items-center justify-between cursor-pointer hover:bg-gray-200`}>
             <span>5 members for $5</span>
-            <button className="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600">
+            <button onClick={()=>handleSelectPackage(5)} className="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600">
               Upgrade
             </button>
           </div>
           <div className="bg-gray-100 p-4 rounded-lg flex items-center justify-between cursor-pointer hover:bg-gray-200">
             <span>10 members for $8</span>
-            <button className="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600">
+            <button onClick={()=>handleSelectPackage(8)} className="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600">
               Upgrade
             </button>
           </div>
           <div className="bg-gray-100 p-4 rounded-lg flex items-center justify-between cursor-pointer hover:bg-gray-200">
             <span>20 members for $15</span>
-            <button className="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600">
+            <button onClick={()=>handleSelectPackage(15)} className="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600">
               Upgrade
             </button>
           </div>
@@ -109,7 +158,7 @@ const AddEmployee = () => {
               </div>
             </div>
           ))}
-        <button
+        <button disabled={totalEmployees >= max_employee}
           className="mt-4 px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-500"
           onClick={handleBulkUpdate}
         >
