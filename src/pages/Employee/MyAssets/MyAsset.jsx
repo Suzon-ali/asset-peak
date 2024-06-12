@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import moment from "moment";
 import toast from "react-hot-toast";
-import useMyInfo from "../../../hooks/useMyInfo";
 
 import { PDFViewer } from '@react-pdf/renderer';
 import AssetPDF from './AssetPDF';
@@ -15,7 +14,7 @@ const MyAsset = () => {
   const [type, setType] = useState("");
   const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
-  const [selectedAsset, setSelectedAsset] = useState(null); // To store the selected asset
+  const [selectedAsset, setSelectedAsset] = useState(null); 
 
   let query = "";
   if (type !== "") {
@@ -51,15 +50,23 @@ const MyAsset = () => {
     },
   });
 
-  const handleCancelRequest = async (assetId) => {
-    if (!assetId) {
+  const handleCancelRequest = async (asset) => {
+    if (!asset?._id) {
       return;
     }
     try {
-      const res = await axiosSecure.delete(`/requests/${assetId}`);
+      const res = await axiosSecure.delete(`/requests/${asset?._id}`);
       if (res.status === 200) {
-        toast.success("Request Canceled");
-        refetch();
+        console.log(`Updating asset ${asset._id} with productQuantity: ${asset.productQuantity + 1}`);
+        const updateRes = await axiosSecure.put(`/assets/${asset._id}`, {
+          productQuantity: asset.productQuantity + 1,
+        });
+        if (updateRes.status === 200) {
+          toast.success("Request Canceled");
+          refetch();
+        } else {
+          toast.error("Failed to update asset quantity");
+        }
       } else {
         toast.error("Failed to cancel request");
       }
@@ -68,28 +75,37 @@ const MyAsset = () => {
       toast.error("Failed to cancel request");
     }
   };
-
-  const handleRequestReturn = async (assetId) => {
-    console.log(assetId)
+  
+  const handleRequestReturn = async (asset) => {
+    if (!asset?._id) {
+      return;
+    }
     const requestInfo = {
       requestStatus: 'returned'
-    }
-    if (!assetId) {
-      return;
-    }
+    };
     try {
-      const res = await axiosSecure.put(`/requests/${assetId}`, requestInfo);
+      const res = await axiosSecure.put(`/requests/${asset._id}`, requestInfo);
       if (res.status === 200) {
-        toast.success("Request Canceled");
-        refetch();
+        console.log(`Updating asset ${asset._id} with productQuantity: ${asset.productQuantity + 1}`);
+        const updateRes = await axiosSecure.put(`/assets/${asset._id}`, {
+          productQuantity: asset.productQuantity + 1,
+        });
+        if (updateRes.status === 200) {
+          toast.success("Request Returned");
+          refetch();
+        } else {
+          toast.error("Failed to update asset quantity");
+        }
       } else {
-        toast.error("Failed to cancel request");
+        toast.error("Failed to return request");
       }
     } catch (error) {
-      console.error("Error canceling request:", error);
-      toast.error("Failed to cancel request");
+      console.error("Error returning request:", error);
+      toast.error("Failed to return request");
     }
   };
+  
+  
 
   const handlePrint = (asset) => {
     setSelectedAsset(asset); // Set the selected asset when the print button is clicked
@@ -189,7 +205,7 @@ const MyAsset = () => {
                     {asset.requestStatus === "pending" && (
                       <button
                         className={`text-yellow-600 hover:text-blue-600`}
-                        onClick={() => handleCancelRequest(asset._id)}
+                        onClick={() => handleCancelRequest(asset)}
                       >
                         Cancel
                       </button>

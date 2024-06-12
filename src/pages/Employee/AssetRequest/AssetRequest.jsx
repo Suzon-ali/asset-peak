@@ -14,13 +14,12 @@ const AssetRequest = () => {
   const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("");
-  const [assetId, setAssetId] = useState(null);
   const [additionalInformation, setAdditionalInfo] = useState("");
   const [myInfo] = useMyInfo();
   const { company_name } = myInfo || {};
 
   const [showModal, setShowModal] = useState(false);
-  const [assetIdToDelete, setAssetIdToDelete] = useState(null);
+  const [assetToDelete, setAssetToDelete] = useState(null); // Renamed to assetToDelete for clarity
 
   let query = "";
   if (type !== "") {
@@ -64,13 +63,14 @@ const AssetRequest = () => {
   }, [search, type, status, sortBy, refetch]);
 
   const handleRequestModal = (asset) => {
-    setAssetIdToDelete(asset);
+    setAssetToDelete(asset);
     setShowModal(true);
   };
 
-  const handleConfirmDelete = async () => {
-    const asset = assetIdToDelete; // Get the asset to delete
+  const handleConfirmRequest = async () => {
+    const asset = assetToDelete;
     const requestInfo = {
+      productID: asset._id,
       productName: asset.productName,
       productType: asset.productType,
       productImage: asset.productImage,
@@ -80,26 +80,39 @@ const AssetRequest = () => {
       approvalDate: "",
       description: additionalInformation,
     };
-
+  
     try {
-      const res = await axiosSecure.post(`/requests`, requestInfo);
-      if (res.status === 200) {
-        toast.success("Request Sent");
-        refetch();
+     
+      const requestRes = await axiosSecure.post(`/requests`, requestInfo);
+      if (requestRes.status === 200) {
+       
+        const updateRes = await axiosSecure.put(`/assets/${asset._id}`, {
+          productQuantity: asset.productQuantity - 1,
+        });
+        if (updateRes.status === 200) {
+          toast.success("Request Sent");
+          refetch();
+        } else {
+          console.error("Failed to update asset quantity:", updateRes.data);
+          toast.error("Failed to update asset quantity");
+        }
       } else {
-        toast.error("Failed to delete asset");
+        console.error("Failed to send request:", requestRes.data);
+        toast.error("Failed to send request");
       }
     } catch (error) {
-      console.error("Error deleting asset:", error);
-      toast.error("Failed to delete asset");
+      console.error("Error requesting asset:", error);
+      toast.error("Failed to request asset");
+      refetch();
     } finally {
       setShowModal(false);
     }
   };
+  
 
   const handleCancelDelete = () => {
     setShowModal(false);
-    setAssetIdToDelete(null);
+    setAssetToDelete(null); // Reset the asset to delete
   };
 
   return (
@@ -188,7 +201,7 @@ const AssetRequest = () => {
                 Product Type
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Product Availability
+                Availability
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Date Added
@@ -216,7 +229,7 @@ const AssetRequest = () => {
                     {asset.productType}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {asset.productQuantity === 0 ? "Out-of-stock" : "Available"}
+                    {asset.productQuantity}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {moment(asset.productAddedDate).format("YYYY-MM-DD")}
@@ -244,7 +257,7 @@ const AssetRequest = () => {
         <RequestModal
           title="Confirmation"
           onClose={handleCancelDelete}
-          onConfirm={handleConfirmDelete}
+          onConfirm={handleConfirmRequest}
           setAdditionalInfo={setAdditionalInfo}
         >
           Are you sure you want to delete this asset?

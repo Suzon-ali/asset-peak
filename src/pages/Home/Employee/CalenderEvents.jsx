@@ -37,7 +37,7 @@ const CalendarEvents = () => {
           className={`border p-1 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 overflow-auto transition cursor-pointer duration-500 ease hover:bg-gray-300 ${isToday ? 'bg-indigo-200' : ''}`}
           key={day}
         >
-          <div className="flex flex-col  mx-auto xl:w-40 lg:w-30 md:w-30 sm:w-full w-10 mx-auto overflow-hidden">
+          <div className="flex flex-col xl:w-40 lg:w-30 md:w-30 sm:w-full w-10 mx-auto overflow-hidden">
             <div className="top h-5 w-full">
               <span className="text-gray-500">{day}</span>
             </div>
@@ -68,7 +68,7 @@ const CalendarEvents = () => {
   };
 
   return (
-    <div className="container mx-auto my-10">
+    <div className="container  mx-auto my-10">
       <div className="wrapper bg-white rounded shadow w-full ">
         <div className="header flex justify-between border-b p-2">
           <span className="text-lg font-bold">
