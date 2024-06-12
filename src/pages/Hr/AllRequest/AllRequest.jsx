@@ -1,49 +1,97 @@
 
-
-import  { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import useAuth from '../../../hooks/useAuth';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import useMyInfo from '../../../hooks/useMyInfo';
+import moment from 'moment';
+import toast from 'react-hot-toast';
+import { useEffect, useState } from 'react';
 
 const AllRequest = () => {
-  // Dummy data for demonstration purposes
-  const [requests, setRequests] = useState([
-    {
-      id: 1,
-      assetName: 'Laptop',
-      assetType: 'Hardware',
-      requesterEmail: 'john.doe@example.com',
-      requesterName: 'John Doe',
-      requestDate: 'June 1, 2024',
-      additionalNote: 'Need a new laptop for software development tasks.',
-      status: 'Pending',
-    },
-    // Add more request items as needed
-  ]);
 
-  // State for search query
-  const [searchQuery, setSearchQuery] = useState('');
+  const {user, loading} = useAuth();
+  const [search, setSearch] = useState('');
+  const axiosSecure = useAxiosSecure();
+  const [myInfo] = useMyInfo();
+  const {company_name} = myInfo || {};
 
-  // Filtered requests based on search query
-  const filteredRequests = requests.filter((request) =>
-    request.requesterName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    request.requesterEmail.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  // Handle search input change
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
+
+  let query = ''
+
+  if(search !== '' && isValidEmail(search)){
+    query += `&requestedBy=${search.toLowerCase()}`
+  }
+
+  if(search !== '' && !isValidEmail(search)){
+    query += `&requestorName=${search.toLowerCase()}`
+  }
+
+
+  const {
+    data: requests,
+    isLoading: isAssetsLoading,
+    refetch,
+  } = useQuery({
+    queryKey: [company_name, "requests"],
+    enabled: company_name !== undefined && !loading,
+    queryFn: async () => {
+      try {
+        if (!company_name) {
+          throw new Error("User email is not available.");
+        }
+        const res = await axiosSecure.get(
+          `/requests/admin?productCompanyName=${company_name}${query}`
+        );
+        return res.data;
+      } catch (error) {
+        console.error("Error fetching assets:", error);
+        throw error;
+      }
+    },
+  });
+
+  useEffect(()=>{
+    refetch();
+  },[search, refetch])
+
+  const handleRequestStatusChange = async (request) => {
+    if (!request?._id) {
+      return;
+    }
+  
+    try {
+      const res = await axiosSecure.put(`/requests/admin/${request._id}`, {
+        requestStatus: 'approved',
+      });
+  
+      if (res.status === 200) {
+        toast.success("Approved!");
+        refetch();
+      } else {
+        toast.error("Failed to approve request");
+      }
+    } catch (error) {
+      console.error("Error updating request status:", error);
+      toast.error("Error approving request: " + (error.response?.data?.error || error.message));
+    }
+  };
+  
 
   return (
     <div className="max-w-6xl mx-auto py-8 px-4">
       <h1 className="text-3xl font-semibold mb-6">All Requests</h1>
       
-      {/* Search Section */}
-      <div className="mb-6">
+      <div className="mb-6 w-full">
         <input
           type="text"
-          placeholder="Search by requester name or email"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={searchQuery}
-          onChange={handleSearchChange}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by name..."
+          className="w-[92dvw] lg:w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
         />
       </div>
       
@@ -62,16 +110,16 @@ const AllRequest = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredRequests.map((request) => (
-              <tr key={request.id} className="text-sm">
-                <td className="border px-4 py-2">{request.assetName}</td>
-                <td className="border px-4 py-2">{request.assetType}</td>
-                <td className="border px-4 py-2">{request.requesterName} ({request.requesterEmail})</td>
-                <td className="border px-4 py-2">{request.requestDate}</td>
-                <td className="border px-4 py-2">{request.additionalNote}</td>
-                <td className="border px-4 py-2">{request.status}</td>
+            {requests && requests.map((request) => (
+              <tr key={request._id} className="text-sm">
+                <td className="border px-4 py-2">{request.productName}</td>
+                <td className="border px-4 py-2">{request.productType}</td>
+                <td className="border px-4 py-2">{request.requestedBy} ({request.requestorName})</td>
+                <td className="border px-4 py-2">{moment(request.requestedDate).format("DD/MM/YYYY")}</td>
+                <td className="border px-4 py-2">{request.description}</td>
+                <td className="border px-4 py-2">{request.requestStatus}</td>
                 <td className="border px-4 py-2">
-                  <button className="px-2 py-1 bg-green-500 text-white rounded-md mr-2">Approve</button>
+                  <button onClick={()=>handleRequestStatusChange(request)} className="px-2 py-1 bg-green-500 text-white rounded-md mr-2">Approve</button>
                   <button className="px-2 py-1 bg-red-500 text-white rounded-md">Reject</button>
                 </td>
               </tr>

@@ -36,11 +36,11 @@ const AssetRequest = () => {
   }
 
   const {
-    data: assets,
+    data: companyAssets,
     isLoading: isAssetsLoading,
     refetch,
   } = useQuery({
-    queryKey: [user?.email, "assets"],
+    queryKey: [user?.email, "assets", company_name],
     enabled: user?.email !== undefined && !loading,
     queryFn: async () => {
       try {
@@ -60,7 +60,10 @@ const AssetRequest = () => {
 
   useEffect(() => {
     refetch();
-  }, [search, type, status, sortBy, refetch]);
+  }, [search, type, status, sortBy, refetch, company_name]);
+
+
+  console.log(companyAssets)
 
   const handleRequestModal = (asset) => {
     setAssetToDelete(asset);
@@ -74,6 +77,8 @@ const AssetRequest = () => {
       productName: asset.productName,
       productType: asset.productType,
       productImage: asset.productImage,
+      productCompanyName: company_name,
+      requestorName: user.displayName,
       requestStatus: "pending",
       requestedBy: user?.email,
       requestedDate: new Date(),
@@ -212,8 +217,8 @@ const AssetRequest = () => {
             </tr>
           </thead>
           <tbody>
-            {assets &&
-              assets.map((asset) => (
+            {companyAssets &&
+              companyAssets.map((asset) => (
                 <tr key={asset._id} className="border-b border-gray-200">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <img
