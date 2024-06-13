@@ -1,41 +1,89 @@
-
-
-import  { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import useAuth from '../../../hooks/useAuth';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import useMyInfo from '../../../hooks/useMyInfo';
+import moment from 'moment';
+import toast from 'react-hot-toast';
+import React from 'react';
 
 const TopRequest = () => {
-  // Dummy data for demonstration purposes
-  const [requests, setRequests] = useState([
-    {
-      id: 1,
-      assetName: 'Laptop',
-      assetType: 'Hardware',
-      requesterEmail: 'john.doe@example.com',
-      requesterName: 'John Doe',
-      requestDate: 'June 1, 2024',
-      additionalNote: 'Need a new laptop for software development tasks.',
-      status: 'Pending',
+  const { user, loading } = useAuth();
+  const axiosSecure = useAxiosSecure();
+  const [myInfo] = useMyInfo();
+  const { company_name } = myInfo || {};
+
+  const {
+    data: topRequests,
+    isLoading: isAssetsLoading,
+    refetch,
+    error
+  } = useQuery({
+    queryKey: [company_name, "requests"],
+    enabled: company_name !== undefined && !loading,
+    queryFn: async () => {
+      if (!company_name) {
+        throw new Error("Company name is not available.");
+      }
+      const res = await axiosSecure.get(`/requests/admin/most-requests?productCompanyName=${company_name}`);
+      return res.data;
     },
-    // Add more request items as needed
-  ]);
+  });
 
-  // State for search query
-  const [searchQuery, setSearchQuery] = useState('');
+  const handleRequestApproved = async (request) => {
+    if (!request?._id) {
+      return;
+    }
 
-  // Filtered requests based on search query
-  const filteredRequests = requests.filter((request) =>
-    request.requesterName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    request.requesterEmail.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+    try {
+      const res = await axiosSecure.put(`/requests/admin/${request._id}`, {
+        requestStatus: 'approved',
+      });
 
-  // Handle search input change
+      if (res.status === 200) {
+        toast.success("Request Approved!");
+        refetch();
+      } else {
+        toast.error("Failed to approve request");
+      }
+    } catch (error) {
+      console.error("Error updating request status:", error);
+      toast.error("Error approving request: " + (error.response?.data?.error || error.message));
+    }
+  };
 
+  const handleRequestRejected = async (request) => {
+    if (!request?._id) {
+      return;
+    }
+
+    try {
+      const res = await axiosSecure.put(`/requests/admin/${request._id}`, {
+        requestStatus: 'rejected',
+      });
+
+      if (res.status === 200) {
+        toast.success("Request Rejected!");
+        refetch();
+      } else {
+        toast.error("Failed to reject request");
+      }
+    } catch (error) {
+      console.error("Error updating request status:", error);
+      toast.error("Error rejecting request: " + (error.response?.data?.error || error.message));
+    }
+  };
+
+  if (loading || isAssetsLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error fetching top requests: {error.message}</div>;
+  }
 
   return (
     <div className="max-w-6xl mx-auto py-8 px-4">
-      <h1 className="text-xl font-semibold mb-6">Top Request</h1>
-      
-      
-      {/* Request List Section */}
+      <h1 className="text-xl font-semibold mb-6">Top Requests</h1>
       <div className="overflow-x-auto">
         <table className="table-auto w-full border-collapse">
           <thead>
@@ -50,17 +98,17 @@ const TopRequest = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredRequests.map((request) => (
-              <tr key={request.id} className="text-sm">
-                <td className="border px-4 py-2">{request.assetName}</td>
-                <td className="border px-4 py-2">{request.assetType}</td>
-                <td className="border px-4 py-2">{request.requesterName} ({request.requesterEmail})</td>
-                <td className="border px-4 py-2">{request.requestDate}</td>
-                <td className="border px-4 py-2">{request.additionalNote}</td>
-                <td className="border px-4 py-2">{request.status}</td>
-                <td className="border px-4 py-4 lg:flex">
-                  <button className="px-2 py-1 bg-green-500 text-white rounded-md mr-2">Approve</button>
-                  <button className="px-2 py-1 bg-red-500 text-white rounded-md">Reject</button>
+            {topRequests && topRequests.map((request) => (
+              <tr key={request._id} className="text-sm">
+                <td className="border px-4 py-2">{request.productName}</td>
+                <td className="border px-4 py-2">{request.productType}</td>
+                <td className="border px-4 py-2">{request.requestorName} ({request.requestedBy}) </td>
+                <td className="border px-4 py-2">{moment(request.requestedDate).format("DD/MM/YYYY")}</td>
+                <td className="border px-4 py-2">{request.description}</td>
+                <td className="border px-4 py-2">{request.requestStatus}</td>
+                <td className="border px-4 py-2">
+                  <button onClick={() => handleRequestApproved(request)} className="px-2 py-1 bg-green-500 text-white rounded-md mr-2">Approve</button>
+                  <button onClick={() => handleRequestRejected(request)} className="px-2 py-1 bg-red-500 text-white rounded-md">Reject</button>
                 </td>
               </tr>
             ))}
@@ -72,5 +120,3 @@ const TopRequest = () => {
 };
 
 export default TopRequest;
-
-  

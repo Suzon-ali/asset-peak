@@ -58,7 +58,7 @@ const AllRequest = () => {
     refetch();
   },[search, refetch])
 
-  const handleRequestStatusChange = async (request) => {
+  const handleRequestApproved = async (request) => {
     if (!request?._id) {
       return;
     }
@@ -66,6 +66,28 @@ const AllRequest = () => {
     try {
       const res = await axiosSecure.put(`/requests/admin/${request._id}`, {
         requestStatus: 'approved',
+      });
+  
+      if (res.status === 200) {
+        toast.success("Approved!");
+        refetch();
+      } else {
+        toast.error("Failed to approve request");
+      }
+    } catch (error) {
+      console.error("Error updating request status:", error);
+      toast.error("Error approving request: " + (error.response?.data?.error || error.message));
+    }
+  };
+
+  const handleRequestRejecetd = async (request) => {
+    if (!request?._id) {
+      return;
+    }
+  
+    try {
+      const res = await axiosSecure.put(`/requests/admin/${request._id}`, {
+        requestStatus: 'rejected',
       });
   
       if (res.status === 200) {
@@ -114,13 +136,13 @@ const AllRequest = () => {
               <tr key={request._id} className="text-sm">
                 <td className="border px-4 py-2">{request.productName}</td>
                 <td className="border px-4 py-2">{request.productType}</td>
-                <td className="border px-4 py-2">{request.requestedBy} ({request.requestorName})</td>
+                <td className="border px-4 py-2">{request.requestorName} ({request.requestedBy}) </td>
                 <td className="border px-4 py-2">{moment(request.requestedDate).format("DD/MM/YYYY")}</td>
                 <td className="border px-4 py-2">{request.description}</td>
                 <td className="border px-4 py-2">{request.requestStatus}</td>
                 <td className="border px-4 py-2">
-                  <button onClick={()=>handleRequestStatusChange(request)} className="px-2 py-1 bg-green-500 text-white rounded-md mr-2">Approve</button>
-                  <button className="px-2 py-1 bg-red-500 text-white rounded-md">Reject</button>
+                  <button onClick={()=>handleRequestApproved(request)} className="px-2 py-1 bg-green-500 text-white rounded-md mr-2">Approve</button>
+                  <button onClick={()=>handleRequestRejecetd(request)} className="px-2 py-1 bg-red-500 text-white rounded-md">Reject</button>
                 </td>
               </tr>
             ))}
