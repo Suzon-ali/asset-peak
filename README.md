@@ -1,9 +1,32 @@
-# React + Vite
+# MyEmployeeManager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Live Site URL
+[MyEmployeeManager](https://yourlivesiteurl.com)
 
-Currently, two official plugins are available:
+## Employee Credentials
+- **Username:** employee@gmail.com
+- **Password:** 123456
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-# b9a12-client-side-Suzon-ali
+## Hr Credentials
+- **Username:** hr2@gmail.com
+- **Password:** 123456
+
+## Features
+1. **User Authentication**: Secure login and registration system with role-based access control.
+2. **Admin Dashboard**: Comprehensive admin panel for managing users, roles, and permissions.
+3. **Employee Management**: Easily add, remove, and update employee details.
+4. **Company Affiliation**: Assign employees to specific companies and manage company information.
+5. **Team Management**: Create and manage teams within your organization.
+6. **Real-time Notifications**: Get instant updates on employee status and team changes.
+7. **Image Upload**: Upload and display profile pictures for employees.
+8. **Package Management**: Choose from different membership packages to manage the number of team members.
+9. **Advanced Filtering**: Filter users by roles, company, and other criteria.
+10. **Sorting**: Sort employees by various attributes, including name, role, and joining date.
+
+## Getting Started
+
+### Prerequisites
+- Node.js
+- MongoDB
+- npm (Node Package Manager)
+
