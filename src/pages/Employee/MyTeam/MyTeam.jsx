@@ -5,7 +5,6 @@ import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import useMyInfo from '../../../hooks/useMyInfo';
 import useAxiosPublic from '../../../hooks/useAxiosPublic';
 import { useState } from 'react';
-import Spinner from '../../../utility/Loaders/Spinner';
 import toast from 'react-hot-toast';
 import { Helmet } from 'react-helmet';
 
@@ -35,6 +34,8 @@ const MyTeam = () => {
     },
   });
 
+  console.log(teamMembers)
+
   const handleRemoveMember = async (memberId) => {
     setRemoving(true);
     try {
@@ -56,8 +57,6 @@ const MyTeam = () => {
     }
   };
 
-  console.log(teamMembers)
-
   if (isAssetsLoading) {
     return <div>Loading...</div>;
   }
@@ -75,11 +74,11 @@ const MyTeam = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {teamMembers && teamMembers.map((member) => (
           <div
-            key={member._id} // Ensure to use a unique key
+            key={member._id} 
             className="bg-white rounded-lg shadow-md overflow-hidden"
           >
             <img
-              src={member.photoUrl}
+              src={member.photoURL}
               alt={member.name}
               className="w-full h-48 object-cover"
             />

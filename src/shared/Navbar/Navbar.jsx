@@ -161,7 +161,7 @@ const Navbar = () => {
                     <span className="sr-only">Open user menu</span>
                     <img
                       className="h-8 w-8 rounded-full"
-                      src={user?.photoURL ? 'user?.photoURL' : 'https://i.ibb.co/Hr77j3s/image.png'}
+                      src={user?.photoURL ? user?.photoURL : 'https://i.ibb.co/Hr77j3s/image.png'}
                       alt=""
                     />
                   </button>
