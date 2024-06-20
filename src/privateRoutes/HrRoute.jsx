@@ -29,8 +29,6 @@ const HrRoute = ({ children }) => {
     }
   }, [authLoading, user, axiosSecure]);
 
-  console.log('User:', user); 
-  console.log('Role:', role); 
 
   if (authLoading || roleLoading || isPaidLoading) {
     return <RefreshLoader />

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Modal from "./Modal";
 import UpdateModal from "./UpdateModal";
+import { Helmet } from "react-helmet";
 
 const AssetList = () => {
   const axiosSecure = useAxiosSecure();
@@ -101,6 +102,12 @@ const AssetList = () => {
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-2 lg:px-0">
+
+<Helmet>
+        <title>AssetPeak | Asset List</title>
+      </Helmet>
+
+
       <h2 className="text-3xl font-semibold mb-6">Asset List Page</h2>
 
       {/* Search Section */}

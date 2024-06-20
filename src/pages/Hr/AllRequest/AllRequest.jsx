@@ -6,6 +6,7 @@ import useMyInfo from '../../../hooks/useMyInfo';
 import moment from 'moment';
 import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 
 const AllRequest = () => {
 
@@ -84,6 +85,8 @@ const AllRequest = () => {
     if (!request?._id) {
       return;
     }
+
+    console.log(request)
   
     try {
       const res = await axiosSecure.put(`/requests/admin/${request._id}`, {
@@ -91,10 +94,11 @@ const AllRequest = () => {
       });
   
       if (res.status === 200) {
-        toast.success("Approved!");
+        
+        toast.success("Rejected!");
         refetch();
       } else {
-        toast.error("Failed to approve request");
+        toast.error("Failed to reject request");
       }
     } catch (error) {
       console.error("Error updating request status:", error);
@@ -105,6 +109,12 @@ const AllRequest = () => {
 
   return (
     <div className="max-w-6xl mx-auto py-8 px-4">
+
+<Helmet>
+        <title>AssetPeak | All Request</title>
+      </Helmet>
+
+
       <h1 className="text-3xl font-semibold mb-6">All Requests</h1>
       
       <div className="mb-6 w-full">

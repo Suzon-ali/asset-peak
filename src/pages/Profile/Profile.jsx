@@ -1,9 +1,15 @@
-
+import { Helmet } from "react-helmet";
 
 const Profile = () => {
   return (
-    <div>Profile</div>
-  )
-}
+    <>
+      <Helmet>
+        <title>AssetPeak | Profile</title>
+      </Helmet>
 
-export default Profile
+      <div>Profile</div>
+    </>
+  );
+};
+
+export default Profile;

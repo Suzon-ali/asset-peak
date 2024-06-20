@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
@@ -8,7 +7,6 @@ import toast from "react-hot-toast";
 import Modal from "../../Hr/AssetList/Modal";
 import EditAssetModal from "../../Hr/AssetList/UpdateModal";
 
-
 const LimitedStock = () => {
   const axiosSecure = useAxiosSecure();
   const { user, loading } = useAuth();
@@ -17,7 +15,6 @@ const LimitedStock = () => {
   const [showModal, setShowModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [assetIdToDelete, setAssetIdToDelete] = useState(null);
-
 
   const {
     data: limitedAssets,
@@ -42,16 +39,13 @@ const LimitedStock = () => {
     },
   });
 
-  console.log(limitedAssets, "limitedAssets")
+  console.log(limitedAssets, "limitedAssets");
 
-
-  
   const handleUpdateAsset = (assetId) => {
     setShowUpdateModal(true);
-    setAssetId(assetId)
+    setAssetId(assetId);
     console.log("Update Asset:", assetId);
   };
-
 
   const handleDeleteAsset = async (assetId) => {
     setAssetIdToDelete(assetId);
@@ -81,36 +75,22 @@ const LimitedStock = () => {
     setAssetIdToDelete(null);
   };
 
-
   return (
-    <div className="max-w-6xl mx-auto p-8 px-2 lg:px-0">
+    <div className="max-w-6xl mx-auto py-8 px-2 lg:px-4">
       <h2 className="text-xl font-semibold mb-6">Limited Stocks</h2>
 
-
-
       {/* List Section */}
-      <div className="bg-white rounded-lg shadow-md overflow-x-auto">
+      <div className="overflow-x-auto">
         <table className="min-w-full">
           <thead>
-            <tr className="bg-gray-100 border-b border-gray-300">
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Product Image
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Product Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Product Type
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Product Quantity
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Date Added
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Actions
-              </th>
+            <tr className="bg-gray-200">
+             
+              <th className="px-4 py-2">Product Image</th>
+              <th className="px-4 py-2">Product Name</th>
+              <th className="px-4 py-2">Product Type</th>
+              <th className="px-4 py-2">Product Quantity</th>
+              <th className="px-4 py-2">Date Added</th>
+              <th className="px-4 py-2">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -166,11 +146,15 @@ const LimitedStock = () => {
         </Modal>
       )}
 
-      {showUpdateModal  && <EditAssetModal productListRefetch={refetch} assetId={assetId} setShowUpdateModal={setShowUpdateModal} />}
-
+      {showUpdateModal && (
+        <EditAssetModal
+          productListRefetch={refetch}
+          assetId={assetId}
+          setShowUpdateModal={setShowUpdateModal}
+        />
+      )}
     </div>
   );
 };
 
 export default LimitedStock;
-

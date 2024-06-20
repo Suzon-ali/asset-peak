@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import moment from "moment";
 import toast from "react-hot-toast";
 
-import { PDFViewer } from '@react-pdf/renderer';
-import AssetPDF from './AssetPDF';
+import { PDFViewer } from "@react-pdf/renderer";
+import AssetPDF from "./AssetPDF";
+import { Helmet } from "react-helmet";
 
 const MyAsset = () => {
   const axiosSecure = useAxiosSecure();
@@ -14,7 +15,7 @@ const MyAsset = () => {
   const [type, setType] = useState("");
   const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
-  const [selectedAsset, setSelectedAsset] = useState(null); 
+  const [selectedAsset, setSelectedAsset] = useState(null);
 
   let query = "";
   if (type !== "") {
@@ -57,7 +58,11 @@ const MyAsset = () => {
     try {
       const res = await axiosSecure.delete(`/requests/${asset?._id}`);
       if (res.status === 200) {
-        console.log(`Updating asset ${asset._id} with productQuantity: ${asset.productQuantity + 1}`);
+        console.log(
+          `Updating asset ${asset._id} with productQuantity: ${
+            asset.productQuantity + 1
+          }`
+        );
         const updateRes = await axiosSecure.put(`/assets/${asset._id}`, {
           productQuantity: asset.productQuantity + 1,
         });
@@ -75,18 +80,22 @@ const MyAsset = () => {
       toast.error("Failed to cancel request");
     }
   };
-  
+
   const handleRequestReturn = async (asset) => {
     if (!asset?._id) {
       return;
     }
     const requestInfo = {
-      requestStatus: 'returned'
+      requestStatus: "returned",
     };
     try {
       const res = await axiosSecure.put(`/requests/${asset._id}`, requestInfo);
       if (res.status === 200) {
-        console.log(`Updating asset ${asset._id} with productQuantity: ${asset.productQuantity + 1}`);
+        console.log(
+          `Updating asset ${asset._id} with productQuantity: ${
+            asset.productQuantity + 1
+          }`
+        );
         const updateRes = await axiosSecure.put(`/assets/${asset._id}`, {
           productQuantity: asset.productQuantity + 1,
         });
@@ -104,8 +113,6 @@ const MyAsset = () => {
       toast.error("Failed to return request");
     }
   };
-  
-  
 
   const handlePrint = (asset) => {
     setSelectedAsset(asset); // Set the selected asset when the print button is clicked
@@ -113,6 +120,10 @@ const MyAsset = () => {
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-2 lg:px-0">
+      <Helmet>
+        <title>AssetPeak | My Asset</title>
+      </Helmet>
+
       <h2 className="text-3xl font-semibold mb-6">Asset List Page</h2>
 
       {/* Search Section */}
@@ -191,7 +202,7 @@ const MyAsset = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     {asset.productName}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap"> 
+                  <td className="px-6 py-4 whitespace-nowrap">
                     {asset.productType}
                   </td>
 
@@ -248,4 +259,3 @@ const MyAsset = () => {
 };
 
 export default MyAsset;
-

@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import Spinner from '../../../utility/Loaders/Spinner';
 import useAxiosPublic from '../../../hooks/useAxiosPublic';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 const AddEmployee = () => {
   const { loading } = useAuth();
@@ -101,6 +102,12 @@ const handleSelectPackage = async (package_price) =>{
 
   return (
     <div className="max-w-5xl mx-auto py-8">
+
+<Helmet>
+        <title>AssetPeak | Add Employee</title>
+      </Helmet>
+
+
       <h2 className="text-3xl font-semibold mb-6">Employee Page</h2>
 
       {/* Package Section */}

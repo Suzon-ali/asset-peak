@@ -6,6 +6,7 @@ import useAxiosPublic from "../../../hooks/useAxiosPublic";
 import useAuth from "../../../hooks/useAuth";
 import Spinner from "../../../utility/Loaders/Spinner";
 import useMyInfo from "../../../hooks/useMyInfo";
+import { Helmet } from "react-helmet";
 
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
@@ -72,6 +73,12 @@ const AddAsset = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen py-5 ">
+
+<Helmet>
+        <title>AssetPeak | Add asset</title>
+      </Helmet>
+
+
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full"

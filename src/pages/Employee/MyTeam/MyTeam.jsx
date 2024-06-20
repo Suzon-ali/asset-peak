@@ -7,6 +7,7 @@ import useAxiosPublic from '../../../hooks/useAxiosPublic';
 import { useState } from 'react';
 import Spinner from '../../../utility/Loaders/Spinner';
 import toast from 'react-hot-toast';
+import { Helmet } from 'react-helmet';
 
 const MyTeam = () => {
   const { loading } = useAuth();
@@ -63,6 +64,12 @@ const MyTeam = () => {
 
   return (
     <div className="max-w-4xl mx-auto py-8">
+
+<Helmet>
+        <title>AssetPeak | My Team</title>
+      </Helmet>
+
+
       <h2 className="text-3xl font-semibold mb-6">Team Members</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
